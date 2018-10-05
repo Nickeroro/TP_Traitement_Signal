@@ -12,6 +12,7 @@ t1 = (0:1:N1-1)*Te1;
 t2 = (0:1:N2-1)*Te2;
 
 %Shannon OK fe1 > 2*fmax (7khz)
+%Shannon not OK fe2 < 2*fmax (7khz) #repliement
 s1 = cos(2*pi*fa*t1) + sin (2*pi*fb*t1);
 s2 = cos(2*pi*fa*t2) + sin (2*pi*fb*t2);
 
