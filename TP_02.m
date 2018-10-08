@@ -1,4 +1,6 @@
+tic;
 clear;
+close;
 fe1 = 100000; %hz
 fe2 = 10000;
 Te1 = 1/fe1;
@@ -21,15 +23,28 @@ Nfft2 = N2*10;
 freq1 = [-Nfft1/2:1:Nfft1/2-1]*fe1/Nfft1;
 freq2 = [-Nfft2/2:1:Nfft2/2-1]*fe2/Nfft2;
 
-
-spectre1 = fft(s1, Nfft1)/N1;
-spectre_ampl1 = abs(spectre1);
-spectre_C1 = fftshift(spectre_ampl1);
-
-spectre2 = fft(s2, Nfft2)/N2;
-spectre_ampl2 = abs(spectre2);
-spectre_C2 = fftshift(spectre_ampl2);
+spectre_C1 = spectre(s1,N1,Nfft1);
+spectre_C2 = spectre(s2,N2,Nfft2);
 
 stem(freq1,spectre_C1)
 hold on
 stem(freq2,spectre_C2)
+
+% Fréquence de coupure 
+n = 10;
+fc = fe2 / 2;
+fcc = fc / fe1 * 2
+h = fir1(n,fcc);
+figure, freqz(h,1,fb,fe1), title(['FAR Avec ordre = ' num2str(n)]);
+
+s1f = filter(h,1,s1);
+spectre_C3 = spectre(s1f,N1,Nfft1);
+
+figure, stem(freq1,spectre_C3)
+
+s2f = filter(h,1,s2);
+spectre4 = fft(s2, Nfft2)/N2;
+spectre_ampl4 = abs(spectre4);
+spectre_C4 = fftshift(spectre_ampl4);
+  
+figure, stem(freq2,spectre_C4)
