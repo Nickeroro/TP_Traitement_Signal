@@ -6,13 +6,13 @@ load("test.mat"); %on charge le fichier Data.mat
 Te = 1/fe;
 N = length(x1);
 T = N*Te;
-t = (0:1:N-1)*Te; %vecteur de temps associé avec t(1)=0, un pas de 1, pour finir à N-1, le tout *Te.
+t = (0:1:N-1)*Te; %vecteur de temps associÃ© avec t(1)=0, un pas de 1, pour finir Ã  N-1, le tout *Te.
 
 % 1)------------------------------------------------------------------------
 %---------------------------------------------------------------------------
 %-------------------------ANALYSE TEMPORELLE--------------------------------
 %---------------------------------------------------------------------------
-%Donnez la représentation temporelle du signal x1.
+%Donnez la reprÃ©sentation temporelle du signal x1.
 figure("name","analyse temporelle")
 subplot(2,1,1);
 plot(t,x1), xlabel("Temps (S)"), ylabel("Amplitude (V)"), title ("Signal Temporel x(t)");
@@ -20,14 +20,14 @@ hold on all
 %Ici, on affiche le signal x1(t)
 
 %---------------------------------------------------------------------------
-%Que pouvez-vous dire sur les caractéristiques temporelles du signal ?
-%Ne pas oublier de légender vos figures (commandes : xlabel(); et ylabel(); ).
+%Que pouvez-vous dire sur les caractÃ©ristiques temporelles du signal ?
+%Ne pas oublier de lÃ©gender vos figures (commandes : xlabel(); et ylabel(); ).
 
 %Ceci est un signal analogique qui dure xxx secondes, d'amplutude max xxx V
 
 %---------------------------------------------------------------------------
 %Estimer la moyenne du signal. 
-%Représenter cette valeur moyenne sur votre graphique.
+%ReprÃ©senter cette valeur moyenne sur votre graphique.
 
 vect_mean = mean(x1).*ones(1, N);
 plot(t,vect_mean),legend("signal x1","moyenne du signal x1");
@@ -69,26 +69,26 @@ subplot(4,1,3);
 stem(freq, abs(spectre_c)),xlabel("Frequence [-1/2 1/2] (Hz)"),ylabel("Amplitude (V)"),title("Spectre Amplitude sur [-1/2 1/2]");
 
 subplot(4,1,4);
-stem(freq, abs(spectre_c)),xlabel("Frequence [-0.01 0.01] (Hz)"),ylabel("Amplitude (V)"),title("Spectre Amplitude sur [-1/2 1/2] zommé sur la raie centrale");
+stem(freq, abs(spectre_c)),xlabel("Frequence [-0.01 0.01] (Hz)"),ylabel("Amplitude (V)"),title("Spectre Amplitude sur [-1/2 1/2] zommÃ© sur la raie centrale");
 xlim([-.01 .01]);
 
 %---------------------------------------------------------------------------
-%Que pouvez-vous dire sur les caractéristiques fréquentielles du signal ?
+%Que pouvez-vous dire sur les caractÃ©ristiques frÃ©quentielles du signal ?
 % 
 % PARLER DES RAIES APPARENTES !!!!!!!!!!!!!!
 %
-%Les trois representations sont différentes car :
-% -La première représente le signal sur une plage de fréquences [0 fe] soit
-%  la Transformée de Fourrier de x1(n).
+%Les trois representations sont diffÃ©rentes car :
+% -La premiÃ¨re reprÃ©sente le signal sur une plage de frÃ©quences [0 fe] soit
+%  la TransformÃ©e de Fourrier de x1(n).
 %
-% -La seconde représente le signal sur une plage de fréquences [-fe/2 fe/2]
-%  soit Transformée de Fourrier centrée de x1(n).
+% -La seconde reprÃ©sente le signal sur une plage de frÃ©quences [-fe/2 fe/2]
+%  soit TransformÃ©e de Fourrier centrÃ©e de x1(n).
 %
-% -La troisieme représente le signal sur une plage de fréquences [-1/2 1/2]
-%  soit Transformée de Fourrier centrée de x1(n) normalisé.
+% -La troisieme reprÃ©sente le signal sur une plage de frÃ©quences [-1/2 1/2]
+%  soit TransformÃ©e de Fourrier centrÃ©e de x1(n) normalisÃ©.
 %
 %Retrouve-t-on la moyenne du signal ?
-%Oui, nous la retrouvons sur les deux derinères analyses spectrales soir
+%Oui, nous la retrouvons sur les deux derinÃ¨res analyses spectrales soir
 %sur [-fe/2 fe/2] et sur [-1/2 1/2]. La valeur moyenne du signal est
 %l'amplitude de cette raie centrale.
 % 
@@ -114,13 +114,13 @@ spectre_c = fftshift(spectre);
 Nfft = length(spectre_c);
 freq = [-Nfft/2 : 1 : Nfft/2-1]*fe/Nfft;
 stem(freq, abs(spectre_c));
-xlabel("Frequence [-fe/2 fe/2] (Hz)"),ylabel("Amplitude (V)"),title("Signal fréquenciel sur [-fe/2 fe/2]");
+xlabel("Frequence [-fe/2 fe/2] (Hz)"),ylabel("Amplitude (V)"),title("Signal frÃ©quenciel sur [-fe/2 fe/2]");
 
-%En faisant cela, nous avons une raie centrale d'amplitude 0, c'est à dire
+%En faisant cela, nous avons une raie centrale d'amplitude 0, c'est Ã  dire
 %que nous venons de supprimer cette raie.
 
-%question bonus: dans la représentation fréquencielle, les fréquences de
-%basse amplitudes représentent le bruit du signal. 
+%question bonus: dans la reprÃ©sentation frÃ©quencielle, les frÃ©quences de
+%basse amplitudes reprÃ©sentent le bruit du signal. 
 %Nous avons du bruit dit "stationnaire" ou "bruit blanc".
 
 % 3)------------------------------------------------------------------------
@@ -165,18 +165,18 @@ xlabel("Frequence [re-10 re+10] (Hz)"),ylabel("Amplitude (V)"),title("Note: RE")
 xlim([(re-10) (re+10)]);
 
 
-%b)Pourquoi ne retrouve-t-on pas exactement les fréquences du tableau ci-dessus ?
-% Car nous avons ici un signal enregisté, les notes ne sont pas "pures".
+%b)Pourquoi ne retrouve-t-on pas exactement les frÃ©quences du tableau ci-dessus ?
+% Car nous avons ici un signal enregistÃ©, les notes ne sont pas "pures".
 %
-% Résolution spectrale:
+% RÃ©solution spectrale:
 r = 1/(N*Te);
 % r = 1/T = 1/(N*Te)
 %
-% Précision spectrale:
+% PrÃ©cision spectrale:
 delta_f = fe/Nfft;
 % delta_f = fe/Nfft
 %
-% Nous avons le même résultat car dans notre cas: Nfft = N
+% Nous avons le mÃªme rÃ©sultat car dans notre cas: Nfft = N
 
 %c)
 
@@ -196,7 +196,7 @@ for i = 1:8
     title(['bloc',num2str(i)]);
 end
 
-figure("name","Blocs signaux fréquenciels")
+figure("name","Blocs signaux frÃ©quenciels")
 for i = 1:8
     x_bloc = x2(floor(N_note*(i-1)+1:N_note*i));
     subplot(1,8,i);
@@ -208,46 +208,67 @@ for i = 1:8
     title(['bloc',num2str(i)]);
 end
 
-%figure()
-% partition = ["sol", "la", "si", "do", "re", "sol", "la", "si"];
-% for i =1:8
-%     if (partition(i) == "sol")
-%         f0 = sol;
-%     elseif (partition(i) == "la")
-%         f0 = la;
-%     elseif (partition(i) == "si")
-%         f0 = si;
-%     elseif (partition(i) == "do")
-%         f0 = do;
-%     elseif (partition(i) == "re")
-%         f0 = re;
-%     else
-%     disp('Outch, y''a une erreur!');
-%     end
-%     %subplot(1,8,i);
-%     playtime = cos(2*pi*f0*t_note);
-%     %plot(t_note, playtime)
-%     Ai = ia_time(i) + arrival;
-%     son = [playtime]
-%     plot(playtime)
-% end
-%sound(x1,fe)
+grandfinal = zeros(1,8);
+partition = ["do", "re", "la", "si", "re", "sol", "si", "do"];
+for i =1:8
+    if (partition(i) == "sol")
+        f0 = sol;
+    elseif (partition(i) == "la")
+        f0 = la;
+    elseif (partition(i) == "si")
+        f0 = si;
+    elseif (partition(i) == "do")
+        f0 = do;
+    elseif (partition(i) == "re")
+        f0 = re;
+    else
+    disp('Outch, y''a une erreur!');
+    end
+    subplot(8,1,i);
+    playtime = cos(2*pi*f0*t_note);
+    plot(t_note,playtime);
+    grandfinal = [grandfinal, playtime];
+end
 
-figure();
-signalfinal = [cos(2*pi*la*t_note) cos(2*pi*re*t_note) cos(2*pi*si*t_note) cos(2*pi*do*t_note)];
-plot(signalfinal);
-
-sound(signalfinal,fe);
+figure("name","Grand final");
+plot(grandfinal),xlabel("Temps(s)"),ylabel("Amplitude(V)"),title("Signal reconsituÃ©");
+sound(x2,fe);
+pause(5);
+sound(grandfinal,fe);
 
 
 figure("name","spectrogram");
 spectrogram(x2,400,300,[],fe,'yaxis');
 
-% Le spectrogramme est une représentation en un seul diagramme à deux 
-%dimensions de trois paramètres:
-% - La fréquence (axe Y)
+% Le spectrogramme est une reprÃ©sentation en un seul diagramme Ã  deux 
+%dimensions de trois paramÃ¨tres:
+% - La frÃ©quence (axe Y)
 % - Le temps (axe X)
-% - La puissance/intensitée (couleurs)
-% plus la couleur évolue vers le rouge plus l’intensité est importante
-% On peut donc représenter de manière temporelle notre signal fréquenciel
+% - La puissance/intensitÃ©e (couleurs)
+% plus la couleur Ã©volue vers le rouge plus lâ€™intensitÃ© est importante
+% On peut donc reprÃ©senter de maniÃ¨re temporelle notre signal frÃ©quenciel
 
+
+
+
+
+%%%%%%%%%%%%%%%%%
+%%%%%%MARIO%%%%%%
+%delays = [150,300,300,100,300,550,575,450,400,500,300,330,150,300,200,200,150,300,150,350,300,150,150,500,450,400,500,300,330,150,300,200,200,150,300,150,350,300,150,150,500,300,100,150,150,300,300,150,150,300,150,100,220,300,100,150,150,300,300,300,150,300,300,300,100,150,150,300,300,150,150,300,150,100,420,450,420,360,300,300,150,300,300,100,150,150,300,300,150,150,300,150,100,220,300,100,150,150,300,300,300,150,300,300,300,100,150,150,300,300,150,150,300,150,100,420,450,420,360,300,300,150,300,150,300,350,150,350,150,300,150,600,150,300,350,150,150,550,325,600,150,300,350,150,350,150,300,150,600,150,300,300,100,300,550,575];
+%delays_ms = delays*0.001
+%Tone1 = [660,660,660,510,660,770,380,510,380,320,440,480,450,430,380,660,760,860,700,760,660,520,580,480,510,380,320,440,480,450,430,380,660,760,860,700,760,660,520,580,480,500,760,720,680,620,650,380,430,500,430,500,570,500,760,720,680,620,650,1020,1020,1020,380,500,760,720,680,620,650,380,430,500,430,500,570,585,550,500,380,500,500,500,500,760,720,680,620,650,380,430,500,430,500,570,500,760,720,680,620,650,1020,1020,1020,380,500,760,720,680,620,650,380,430,500,430,500,570,585,550,500,380,500,500,500,500,500,500,500,580,660,500,430,380,500,500,500,500,580,660,870,760,500,500,500,500,580,660,500,430,380,660,660,660,510,660,770,380];
+%%%%%%%%%%%%%%%%%
+
+
+
+% musique = zeros(1,(length(Tone1)));
+% for i = 1: (length(Tone1));
+%    N_note = ((delays_ms(i))*10^4)*4;
+%    t_note = (0:1:N_note-1)*Te;
+%     
+%    f0 = Tone1(i);
+%    note = cos(2*pi*f0*t_note);
+%    musique = [musique, note]; 
+% end
+% 
+% sound(musique,fe);
