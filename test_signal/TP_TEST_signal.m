@@ -1,6 +1,6 @@
 clear;
 close all;
-load("test.mat"); %on charge le fichier Data.mat
+load("Data.mat"); %on charge le fichier Data.mat
 
 
 Te = 1/fe;
@@ -8,7 +8,7 @@ N = length(x1);
 T = N*Te;
 t = (0:1:N-1)*Te; %vecteur de temps associé avec t(1)=0, un pas de 1, pour finir à N-1, le tout *Te.
 
-% 1)------------------------------------------------------------------------
+% 1)a)------------------------------------------------------------------------
 %---------------------------------------------------------------------------
 %-------------------------ANALYSE TEMPORELLE--------------------------------
 %---------------------------------------------------------------------------
@@ -21,13 +21,12 @@ hold on all
 
 %---------------------------------------------------------------------------
 %Que pouvez-vous dire sur les caractéristiques temporelles du signal ?
-%Ne pas oublier de légender vos figures (commandes : xlabel(); et ylabel(); ).
 
-%Ceci est un signal analogique qui dure xxx secondes, d'amplutude max xxx V
+%Ceci est un signal analogique qui dure 04 secondes, d'amplutude max 30 V
 
 %---------------------------------------------------------------------------
-%Estimer la moyenne du signal. 
-%Représenter cette valeur moyenne sur votre graphique.
+%Estimer la moyenne du signal. Ici, nous avons une moyenne égale à 10.01 V.
+%Représenter cette valeur moyenne sur votre graphique:
 
 vect_mean = mean(x1).*ones(1, N);
 plot(t,vect_mean),legend("signal x1","moyenne du signal x1");
@@ -41,9 +40,10 @@ plot(t,vect_mean),legend("signal x1","moyenne du signal x1");
 xlim([0 0.01]);
 hold off
 
-%---------------------------------------------------------------------------
+% 1)b)-----------------------------------------------------------------------
 %-------------------------ANALYSE FREQUENCIELLE-----------------------------
 %---------------------------------------------------------------------------
+
 figure("name","Analyse Frequencielle");
 % Spectre sur [0 ; fe]
 Nfft = N;
@@ -75,7 +75,8 @@ xlim([-.01 .01]);
 %---------------------------------------------------------------------------
 %Que pouvez-vous dire sur les caractéristiques fréquentielles du signal ?
 % 
-% PARLER DES RAIES APPARENTES !!!!!!!!!!!!!!
+% Ici, nous voyons une raie de forte amplitude au milieu du signal, c'est
+% la valeur moyenne de celui-ci.
 %
 %Les trois representations sont différentes car :
 % -La première représente le signal sur une plage de fréquences [0 fe] soit
@@ -97,8 +98,8 @@ xlim([-.01 .01]);
 %---------------------------------------------------------------------------
 
 x2 = x1-mean(x1) ;
-%cette ligne de commande viens retirer l'offest du signal x1, le signal x2
-%devrait donc avoir une vlaur moyenne nulle.
+%Cette ligne de commande va retirer l'offest du signal x1, le signal x2
+%devrait donc avoir une valeure moyenne nulle.
 
 figure("name","analyse de ma moyenne du signal")
 subplot(2,1,1);
@@ -121,8 +122,9 @@ xlabel("Frequence [-fe/2 fe/2] (Hz)"),ylabel("Amplitude (V)"),title("Signal fré
 
 %question bonus: dans la représentation fréquencielle, les fréquences de
 %basse amplitudes représentent le bruit du signal. 
-%Nous avons du bruit dit "stationnaire" ou "bruit blanc".
-
+%Nous avons du bruit dit "stationnaire" ou "bruit blanc" (dans tout le domaine fréquenciel).
+%Cela peut être dû à la méthode d'acquisition du signal (qualité du micro
+%etc)
 % 3)------------------------------------------------------------------------
 %---------------------------ANALYSE FINE DU SIGNAL--------------------------
 %---------------------------------------------------------------------------
@@ -176,25 +178,24 @@ r = 1/(N*Te);
 delta_f = fe/Nfft;
 % delta_f = fe/Nfft
 %
-% Nous avons le même résultat car dans notre cas: Nfft = N
+% Nous avons Résolution spectrale = Précision spectrale car dans notre cas: Nfft = N
 
 %c)
 
 Nbre_note = 8;
-%T = 4; %attention
 N_note = N/Nbre_note;
 T_note = T/Nbre_note;
 
 t_note = (0:1:N_note-1)*Te;
 
-%d ) decoupage du signal en X:
+%d ) decoupage du signal en 8 blocs:
 
 figure("name","Blocs signaux temporels")
 for i = 1:8
     x_bloc = x2(floor(N_note*(i-1)+1:N_note*i));
     subplot(1,8,i);
     plot(t_note, x_bloc);
-    title(['bloc',num2str(i)]);
+    title(['bloc ',num2str(i)]);
 end
 
 % Generation des FFT de chaque blocs:
@@ -208,18 +209,27 @@ for i = 1:8
     Nfft = length(spectre_c);
     freq = [-Nfft/2 : 1 : Nfft/2-1]*fe/Nfft;
     stem(freq, abs(spectre_c));
-    title(['bloc',num2str(i)]);
+    title(['bloc ',num2str(i)]);
 end
 
-%On vient chercher la valeur de chaque raies chaque blocs
-%puis on cherche a quelles notes elles correspondent
+
+%On vient chercher la valeur de chaque raies chaque blocs (dans not recas à
+% la main) 
+% Ici, la séquence est (en Hz):392, 440, 494, 493.8, 440, 392, 440, 494
+% puis on cherche a quelles notes elles correspondent;
+% soit: ["sol","la","si","si","la","sol","la","si"]
+ 
 
 %---------------------------GENERATEUR DE SIGNAL--------------------------
 %Ici, nous venons generer notre nouveau signal avec des notes pures, il
 %suffit de rentrer dans "partition" les notes "pures" voulues:
 
+%Affichage des nouveaux blocs signaux:
+
+
+figure("name","Signal reconstitué par blocs");
 grandfinal = zeros(1,8);
-partition = ["do", "re", "la", "si", "re", "sol", "si", "do"];
+partition = ["sol","la","si","si","la","sol","la","si"];
 for i =1:8
     if (partition(i) == "sol")
         f0 = sol;
@@ -240,10 +250,8 @@ for i =1:8
     grandfinal = [grandfinal, playtime];
 end
 
-
-%Affichage du nouveau signal:
-
-figure("name","Grand final");
+%affichage du signal reconstitué "final"
+figure("name","Signal reconstitué");
 plot(grandfinal),xlabel("Temps(s)"),ylabel("Amplitude(V)"),title("Signal reconsitué");
 
 %ecoute de l'ancien signal (avec bruit):
@@ -251,9 +259,13 @@ plot(grandfinal),xlabel("Temps(s)"),ylabel("Amplitude(V)"),title("Signal reconsi
 %pause(5);
 
 %ecoute du nouveau signal genere avec des notes "pures" (sans bruit):
-%sound(grandfinal,fe);
+sound(grandfinal,fe);
+pause(5);
 
 
+% iii) le titre pourrait être "frère jacque" ?
+
+%---------------------------------------------------------------------------
 figure("name","spectrogram");
 spectrogram(x2,400,300,[],fe,'yaxis');
 
@@ -266,35 +278,37 @@ spectrogram(x2,400,300,[],fe,'yaxis');
 % On peut donc représenter de manière temporelle notre signal fréquenciel
 
 
-%------------------------------------------------BONUS--------------------------------------------------------------
+%------------------------------------------------BONUS---------------------
 %
-%%J'ai egalement essaye de generer la musique du theme de Mario en generant un signal qui contient des notes qui ont:
-%% -un t_note different (en fonction des donnes dans la liste "delay_ms")
-%% -une note differente (les notes se trouvent dans la liste "Tone1")
-%% 
-%%SOURCES DES DONNEES: https://gist.github.com/internalbuffer/749273f46309a83ddc5d17703392616c
-%%
-%% Decommenter le code ci-dessous pour lancer le theme de mario :
-%%
-%%
-%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%THEME_DE_MARIO%%%%%%
-%delays = [150,300,300,100,300,550,575,450,400,500,300,330,150,300,200,200,150,300,150,350,300,150,150,500,450,400,500,300,330,150,300,200,200,150,300,150,350,300,150,150,500,300,100,150,150,300,300,150,150,300,150,100,220,300,100,150,150,300,300,300,150,300,300,300,100,150,150,300,300,150,150,300,150,100,420,450,420,360,300,300,150,300,300,100,150,150,300,300,150,150,300,150,100,220,300,100,150,150,300,300,300,150,300,300,300,100,150,150,300,300,150,150,300,150,100,420,450,420,360,300,300,150,300,150,300,350,150,350,150,300,150,600,150,300,350,150,150,550,325,600,150,300,350,150,350,150,300,150,600,150,300,300,100,300,550,575];
-%delays_ms = delays*0.001;
-%Tone1 = [660,660,660,510,660,770,380,510,380,320,440,480,450,430,380,660,760,860,700,760,660,520,580,480,510,380,320,440,480,450,430,380,660,760,860,700,760,660,520,580,480,500,760,720,680,620,650,380,430,500,430,500,570,500,760,720,680,620,650,1020,1020,1020,380,500,760,720,680,620,650,380,430,500,430,500,570,585,550,500,380,500,500,500,500,760,720,680,620,650,380,430,500,430,500,570,500,760,720,680,620,650,1020,1020,1020,380,500,760,720,680,620,650,380,430,500,430,500,570,585,550,500,380,500,500,500,500,500,500,500,580,660,500,430,380,500,500,500,500,580,660,870,760,500,500,500,500,580,660,500,430,380,660,660,660,510,660,770,380];
-%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%
+%J'ai egalement essaye de generer la musique du theme de Mario en generant un signal qui contient des notes qui ont:
+% -un t_note different (en fonction des donnes dans la liste "delay_ms")
+% -une note differente (les notes se trouvent dans la liste "Tone1")
+% 
+%SOURCES DES DONNEES: https://gist.github.com/internalbuffer/749273f46309a83ddc5d17703392616c
 %
-%
-%musique = zeros(1,(length(Tone1)));
-%for i = 1: (length(Tone1));
-%   N_note = ((delays_ms(i))*10^4)*4;
-%   t_note = (0:1:N_note-1)*Te;
+% Decommenter le code ci-dessous pour lancer le theme de mario :
+% %--------------------------------------------------------------------------
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%THEME_DE_MARIO%%%%%%%%
+% delays = [150,300,300,100,300,550,575,450,400,500,300,330,150,300,200,200,150,300,150,350,300,150,150,500,450,400,500,300,330,150,300,200,200,150,300,150,350,300,150,150,500,300,100,150,150,300,300,150,150,300,150,100,220,300,100,150,150,300,300,300,150,300,300,300,100,150,150,300,300,150,150,300,150,100,420,450,420,360,300,300,150,300,300,100,150,150,300,300,150,150,300,150,100,220,300,100,150,150,300,300,300,150,300,300,300,100,150,150,300,300,150,150,300,150,100,420,450,420,360,300,300,150,300,150,300,350,150,350,150,300,150,600,150,300,350,150,150,550,325,600,150,300,350,150,350,150,300,150,600,150,300,300,100,300,550,575];
+% delays_ms = delays*0.001;
+% Tone1 = [660,660,660,510,660,770,380,510,380,320,440,480,450,430,380,660,760,860,700,760,660,520,580,480,510,380,320,440,480,450,430,380,660,760,860,700,760,660,520,580,480,500,760,720,680,620,650,380,430,500,430,500,570,500,760,720,680,620,650,1020,1020,1020,380,500,760,720,680,620,650,380,430,500,430,500,570,585,550,500,380,500,500,500,500,760,720,680,620,650,380,430,500,430,500,570,500,760,720,680,620,650,1020,1020,1020,380,500,760,720,680,620,650,380,430,500,430,500,570,585,550,500,380,500,500,500,500,500,500,500,580,660,500,430,380,500,500,500,500,580,660,870,760,500,500,500,500,580,660,500,430,380,660,660,660,510,660,770,380];
+% %%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%
+% 
+% 
+% musique = zeros(1,(length(Tone1)));
+% for i = 1: (length(Tone1));
+%   N_note = ((delays_ms(i))*10^4)*2; % moduler le "2" pour la vitesse plus le 
+%   t_note = (0:1:N_note-1)*Te;       % chiffre est elevé, plus les notes sont lentes
 %    
 %   f0 = Tone1(i);
 %   note = cos(2*pi*f0*t_note);
 %   musique = [musique, note]; 
-%end
-%
-%sound(musique,fe);
-%-------------------------------------------------------------------------------------------------------------------------
+% end
+% 
+% sound(musique,fe);
+
+% %-------------------------------------------------------------------------------------------------------------------------
